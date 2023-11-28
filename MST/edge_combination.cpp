@@ -13,10 +13,9 @@ int weight(vector<pair<int,pair<int,int>>> childs){
     return wt;
 }
 
-void help(int i, int k, vector<pair<int,pair<int,int>>> subSet,vector<pair<int,pair<int,int>>> edges,vector<vector<pair<int,pair<int,int>>>> &ans){
+void help(int i, int k, vector<pair<int,pair<int,int>>> subSet,vector<pair<int,pair<int,int>>> edges,set<vector<pair<int,pair<int,int>>>> &ans){
     if(k == 0){
-        cout<<"inside k0"<<endl;
-        ans.push_back(subSet);
+        ans.insert(subSet);
     }
 
     if(i>=edges.size()){
@@ -31,24 +30,20 @@ void help(int i, int k, vector<pair<int,pair<int,int>>> subSet,vector<pair<int,p
 
 }
 
-void combinations(int n,int total, vector<pair<int,pair<int,int>>> edges){
+set<vector<pair<int,pair<int,int>>>> combinations(int n,int total, vector<pair<int,pair<int,int>>> edges){
     vector<pair<int,pair<int,int>>> subSet;
-    vector<vector<pair<int,pair<int,int>>>> ans;
+    set<vector<pair<int,pair<int,int>>>> ans;
+    set<vector<pair<int,pair<int,int>>>> result;
     help(0,n,subSet,edges,ans);
     cout<<ans.size()<<endl;
     int count = 0;
     for(auto child : ans){
         int wt = weight(child);
         if(wt>total) continue;
-        count++;
-        for(auto x : child){
-            cout<<"["<<x.second.first<<","<<x.second.second<<","<<x.first<<"]";
-        }
-
-        cout<<endl;
+        result.insert(child);
     }
 
-    cout<<count<<endl;
+    return result;
 }
 
 
@@ -116,7 +111,42 @@ int main(){
     cout<<total<<endl;
 
     cout<<"Calling combinations : "<<endl;
-    combinations(count,total,edges);
+     set<vector<pair<int,pair<int,int>>>> result;
+    set<vector<pair<int,pair<int,int>>>> ans = combinations(count,total,edges);
+    for(auto child : ans){ 
+        for(auto childs : child){
+            int u = childs.second.first;
+            int v = childs.second.second;
+            make(u);
+            make(v);
+        }
+        bool x = true;
+        for(auto childs : child){
+            int u = childs.second.first;
+            int v = childs.second.second;
+            if(find(u) != find(v)){
+                union_set(u,v);
+            }
+            else{
+                x = false;
+            }
+        }
+
+        if(x){ 
+            result.insert(child);
+        }
+    }
+    count = 0;
+
+    cout<<result.size()<<endl;
+    for(auto child : result){
+        count++;
+        cout<<"MST "<<count<<" : [";
+        for(auto childs : child){
+            cout<<"["<<childs.second.first<<","<<childs.second.second<<","<<childs.first<<"]";
+        }
+        cout<<"]"<<endl;
+    }
 
     fclose(stdin);
 
