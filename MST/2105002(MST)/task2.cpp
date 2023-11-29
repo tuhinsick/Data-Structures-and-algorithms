@@ -16,10 +16,10 @@ int main(){
 
     vector<int> edge_states(m,0);
 
-    for(auto child : result){
-        for(auto childs : child){
+    for(auto edge_container : result){
+        for(auto edge : edge_container){
             for(int i=0;i<m;i++){
-                if(childs == edges[i]){
+                if(edge == edges[i]){
                     edge_states[i]++;
                     break;
                 }
