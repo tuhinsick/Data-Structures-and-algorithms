@@ -2,7 +2,7 @@
 using namespace std;
 
 const int N = 1e5 + 10;
-vector<int> parent(N), size(N, 0);
+vector<int> parent(N), sz(N, 0);
 
 // jotogula edge dibo shobgular weight ber kore dibe
 int weight(vector<pair<int, pair<int, int>>> childs)
@@ -43,7 +43,7 @@ set<vector<pair<int, pair<int, int>>>> combinations(int n, int total, vector<pai
     set<vector<pair<int, pair<int, int>>>> ans;
     set<vector<pair<int, pair<int, int>>>> result;
     help(0, n, subSet, edges, ans);
-    int count = 0;
+   // int count = 0;
     for (auto child : ans)
     {
         int wt = weight(child);
@@ -58,7 +58,7 @@ set<vector<pair<int, pair<int, int>>>> combinations(int n, int total, vector<pai
 void make(int v)
 {
     parent[v] = v;
-    size[v] = 1;
+    sz[v] = 1;
 }
 
 int find(int v)
@@ -77,24 +77,20 @@ void union_set(int u, int v)
     v = find(v);
     if (u != v)
     {
-        if (size[u] < size[v])
+        if (sz[u] < sz[v])
         {
             swap(u, v);
         }
 
         parent[v] = u;
-        size[u] += size[v];
+        sz[u] += sz[v];
     }
 }
 
 // edge gula theke mst find out korbe and then weight ber kore dibe basically
 //  eta holo kruskal algorithm
 
-bool compare(pair<int,pair<int,int>> e1, pair<int,pair<int,int>> e2){
-    return e1.first > e2.first;
-}
-
-double MST_weight(int n,vector<pair<int, pair<int, int>>> edges)
+int MST_weight(int n,vector<pair<int, pair<int, int>>> edges)
 {
     for (int i = 0; i < n; i++)
     {
@@ -102,7 +98,7 @@ double MST_weight(int n,vector<pair<int, pair<int, int>>> edges)
     }
 
     sort(edges.begin(), edges.end());
-    double total = 0;
+    int total = 0;
     for (auto edge : edges)
     {
         int wt = edge.first;
@@ -155,4 +151,49 @@ set<vector<pair<int, pair<int, int>>>> AllMST(set<vector<pair<int, pair<int, int
     }
 
     return result;
+}
+
+int main(){
+    //freopen("in.txt","r",stdin);
+    int n,m;
+    cin>>n>>m;
+    vector<pair<int,pair<int,int>>> edges;
+    for(int i=0;i<m;i++){
+        int u,v,wt;
+        cin>>u>>v>>wt;
+        edges.push_back({wt,{u,v}});
+    }
+    int total = MST_weight(n,edges);
+    set<vector<pair<int,pair<int,int>>>> ans = combinations(n-1,total,edges);
+    set<vector<pair<int,pair<int,int>>>> result = AllMST(ans);
+
+    vector<int> edge_states(m,0);
+
+    for(auto edge_container : result){
+        for(auto edge : edge_container){
+            for(int i=0;i<m;i++){
+                if(edge == edges[i]){
+                    edge_states[i]++;
+                    break;
+                }
+            }
+        }
+    }
+
+    for(auto edge : edge_states){
+        if(edge == 0){
+            cout<<"none"<<endl;
+        }
+
+        else if(edge == result.size()){
+            cout<<"any"<<endl;
+        }
+
+        else{
+            cout<<"at least one"<<endl;
+        }
+    }
+
+    fclose(stdin);
+
 }

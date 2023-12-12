@@ -90,11 +90,7 @@ void union_set(int u, int v)
 // edge gula theke mst find out korbe and then weight ber kore dibe basically
 //  eta holo kruskal algorithm
 
-bool compare(pair<int,pair<int,int>> e1, pair<int,pair<int,int>> e2){
-    return e1.first > e2.first;
-}
-
-double MST_weight(int n,vector<pair<int, pair<int, int>>> edges)
+int MST_weight(int n,vector<pair<int, pair<int, int>>> edges)
 {
     for (int i = 0; i < n; i++)
     {
@@ -102,7 +98,7 @@ double MST_weight(int n,vector<pair<int, pair<int, int>>> edges)
     }
 
     sort(edges.begin(), edges.end());
-    double total = 0;
+    int total = 0;
     for (auto edge : edges)
     {
         int wt = edge.first;
